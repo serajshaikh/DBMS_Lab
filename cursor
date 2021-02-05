@@ -1,0 +1,84 @@
+mysql> create database result;
+Query OK, 1 row affected (0.11 sec)
+
+mysql> use result;
+Database changed
+
+mysql> desc student;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| roll_no | int(11)     | NO   | PRI | NULL    |       |
+| name    | varchar(20) | YES  |     | NULL    |       |
+| mark_1  | int(11)     | YES  |     | NULL    |       |
+| mark_2  | int(11)     | YES  |     | NULL    |       |
+| mark_3  | int(11)     | YES  |     | NULL    |       |
+| mark_4  | int(11)     | YES  |     | NULL    |       |
+| mark_5  | int(11)     | YES  |     | NULL    |       |
+| mark_6  | int(11)     | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+
+mysql> select * from student;
++---------+--------+--------+--------+--------+--------+--------+--------+
+| roll_no | name   | mark_1 | mark_2 | mark_3 | mark_4 | mark_5 | mark_6 |
++---------+--------+--------+--------+--------+--------+--------+--------+
+|       1 | ram    |     95 |     97 |     96 |     98 |     99 |    100 |
+|       2 | rithul |     80 |     75 |     79 |     78 |     85 |     80 |
+|       3 | sugul  |     50 |     65 |     63 |     75 |     67 |     70 |
+|       4 | tino   |     50 |     50 |     50 |     50 |     50 |     60 |
+|       5 | yyyy   |     45 |     45 |     45 |     45 |     45 |     60 |
++---------+--------+--------+--------+--------+--------+--------+--------+
+
+mysql> create procedure calc()
+    -> begin
+    -> declare rno int;
+    -> declare total int;
+    -> declare done int default false;
+    -> declare c cursor for select
+    -> student.roll_no,student.mark_1+student.mark_2+student.mark_3+student.mark_4+student.mark_5+student.mark_6 from student;
+    -> declare continue handler for not found set done=true;
+    -> open c;
+    -> create table temp(roll_no int,total int,grade varchar(20));
+    -> myloop:LOOP
+    -> fetch c into rno,total;
+    -> if done then
+    -> leave myloop;
+    -> end if;
+    -> if total>480 then
+    -> insert into temp values(rno,total,'A');
+    -> else
+    -> if total>400 then
+    -> insert into temp values(rno,total,'B+');
+    -> else
+    -> if total>360 then
+    -> insert into temp values(rno,total,'B');
+    -> else
+    -> if total>300 then
+    -> insert into temp values(rno,total,'C');
+    -> else
+    -> insert into temp values(rno,total,'Fail');
+    -> end if;
+    -> end if;
+    -> end if;
+    -> end if;
+    -> end LOOP;
+    -> close c;
+    -> select * from temp;
+    -> drop table temp;
+    -> end ##
+Query OK, 0 rows affected (0.34 sec)
+
+mysql> delimiter ;
+mysql> call calc();
++---------+-------+-------+
+| roll_no | total | grade |
++---------+-------+-------+
+|       1 |   585 | A     |
+|       2 |   477 | B+    |
+|       3 |   390 | B     |
+|       4 |   310 | C     |
+|       5 |   285 | Fail  |
++---------+-------+-------+
+5 rows in set (0.61 sec)
+
+Query OK, 0 rows affected (0.66 sec)

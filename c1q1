@@ -1,0 +1,148 @@
+mysql> create database labcycle;
+Query OK, 1 row affected (0.22 sec)
+
+mysql> use labcycle;
+Database changed
+mysql> create table student(
+    -> roll_no int primary key,
+    -> name varchar(20),
+    -> DOB date,
+    -> branch varchar(20));
+Query OK, 0 rows affected (0.41 sec)
+
+mysql> desc student;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| roll_no | int(11)     | NO   | PRI | NULL    |       |
+| name    | varchar(20) | YES  |     | NULL    |       |
+| DOB     | date        | YES  |     | NULL    |       |
+| branch  | varchar(20) | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+4 rows in set (0.12 sec)
+
+a)Insert atleast 5 records into table.
+
+mysql> select * from student;
++---------+-----------+------------+--------+
+| roll_no | name      | DOB        | branch |
++---------+-----------+------------+--------+
+|       1 | abhi      | 1998-03-12 | cse    |
+|       2 | biju      | 1998-04-15 | cse    |
+|       3 | cyril     | 1998-05-25 | mech   |
+|       4 | derick    | 1998-06-25 | mech   |
+|       5 | esthappan | 1998-09-25 | eee    |
++---------+-----------+------------+--------+
+5 rows in set (0.00 sec)
+
+b) Display delails of all students along with there age (find with date of birth)
+
+mysql> select roll_no,name,DOB,branch,(year(curdate())-year(DOB)) as age
+ from student;
++---------+-----------+------------+--------+------+
+| roll_no | name      | DOB        | branch | age  |
++---------+-----------+------------+--------+------+
+|       1 | abhi      | 1998-03-12 | cse    |   22 |
+|       2 | biju      | 1998-04-15 | cse    |   22 |
+|       3 | cyril     | 1998-05-25 | mech   |   22 |
+|       4 | derick    | 1998-06-25 | mech   |   22 |
+|       5 | esthappan | 1998-09-25 | eee    |   22 |
++---------+-----------+------------+--------+------+
+
+c)Alter the table by adding two mark1 and mark2 and update the mark of all students(maximun mark is 100)
+
+mysql> alter table student add column mark1 int;
+
+
+mysql> alter table student add column mark2 int;
+
+mysql> desc student;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| roll_no | int(11)     | NO   | PRI | NULL    |       |
+| name    | varchar(20) | YES  |     | NULL    |       |
+| DOB     | date        | YES  |     | NULL    |       |
+| branch  | varchar(20) | YES  |     | NULL    |       |
+| mark1   | int(11)     | YES  |     | NULL    |       |
+| mark2   | int(11)     | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+
+
+
+mysql> update student
+    -> set mark1=98,mark2=95
+    -> where roll_no=1;
+
+
+mysql> update student
+    -> set mark1=65,mark2=75
+    -> where roll_no=2;
+
+
+mysql> update student
+    -> set mark1=55,mark2=50
+    -> where roll_no=3;
+
+
+mysql> update student
+    -> set mark1=89,mark2=92
+    -> where roll_no=4;
+
+
+mysql> update student
+    -> set mark1=98,mark2=78
+    -> where roll_no=5;
+
+
+mysql> select * from student;
++---------+-----------+------------+--------+-------+-------+
+| roll_no | name      | DOB        | branch | mark1 | mark2 |
++---------+-----------+------------+--------+-------+-------+
+|       1 | abhi      | 1998-03-12 | cse    |    98 |    95 |
+|       2 | biju      | 1998-04-15 | cse    |    65 |    75 |
+|       3 | cyril     | 1998-05-25 | mech   |    55 |    50 |
+|       4 | derick    | 1998-06-25 | mech   |    89 |    92 |
+|       5 | esthappan | 1998-09-25 | eee    |    98 |    78 |
++---------+-----------+------------+--------+-------+-------+
+
+d) Find the total mark of student as some of mark1 and mark2
+
+mysql> select *,mark1+mark2 as total from student;
++---------+-----------+------------+--------+-------+-------+-------+
+| roll_no | name      | DOB        | branch | mark1 | mark2 | total |
++---------+-----------+------------+--------+-------+-------+-------+
+|       1 | abhi      | 1998-03-12 | cse    |    98 |    95 |   193 |
+|       2 | biju      | 1998-04-15 | cse    |    65 |    75 |   140 |
+|       3 | cyril     | 1998-05-25 | mech   |    55 |    50 |   105 |
+|       4 | derick    | 1998-06-25 | mech   |    89 |    92 |   181 |
+|       5 | esthappan | 1998-09-25 | eee    |    98 |    78 |   176 |
++---------+-----------+------------+--------+-------+-------+-------+
+
+e)display the details of student branch wise in the decending order of their total mark.
+
+mysql> select *,mark1+mark2 as total from student order by branch,total desc;
++---------+-----------+------------+--------+-------+-------+-------+
+| roll_no | name      | DOB        | branch | mark1 | mark2 | total |
++---------+-----------+------------+--------+-------+-------+-------+
+|       1 | abhi      | 1998-03-12 | cse    |    98 |    95 |   193 |
+|       2 | biju      | 1998-04-15 | cse    |    65 |    75 |   140 |
+|       5 | esthappan | 1998-09-25 | eee    |    98 |    78 |   176 |
+|       4 | derick    | 1998-06-25 | mech   |    89 |    92 |   181 |
+|       3 | cyril     | 1998-05-25 | mech   |    55 |    50 |   105 |
++---------+-----------+------------+--------+-------+-------+-------+
+5 rows in set (0.00 sec)
+
+f)display the highest lowest and average of total mark branch wise
+
+mysql> select branch, max(mark1+mark2) as highest,min(mark1+mark2) as lowest,
+avg(mark1+mark2) as average from student
+     group by branch;
++--------+---------+--------+----------+
+| branch | highest | lowest | average  |
++--------+---------+--------+----------+
+| cse    |     193 |    140 | 166.5000 |
+| eee    |     176 |    176 | 176.0000 |
+| mech   |     181 |    105 | 143.0000 |
++--------+---------+--------+----------+
+3 rows in set (0.00 sec)

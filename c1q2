@@ -1,0 +1,426 @@
+EMPLOYEE TABLE
+ENO : PRIMARY KEY 
+ENAME: NOT NULL
+SALARY : NOT NULL
+DEPTNO: Foreign key referencing DEPTNO in DEPARTMENT table. 
+MNGRNO:
+DOJ: NOT NULL 
+ADDRESS: 
+CITY : (MUST BE KOCHI/MUMBAI/CHENNAI). 
+PINCODE:
+//////////////////////////////////////////////////////////////////////////////////////
+
+mysql> create database empde;
+
+
+mysql> use empde;
+
+mysql> create table department(deptno int(10) primary key, dname varchar(20),year  int(4) not null);
+
+mysql> create table employee(eno int(10) primary key,ename varchar(20) not null, salary float(20) not null, deptno int(5) not null, foreign key(deptno) references department(deptno));
+
+mysql> alter table employee add (mngrno int(8), doj date not null);
+
+mysql> alter table employee add (address varchar(20),city varchar (20), pincode int(6),designation varchar(20));
+
+
+mysql> desc employee;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| eno         | int(11)     | NO   | PRI | NULL    |       |
+| ename       | varchar(20) | NO   |     | NULL    |       |
+| salary      | varchar(20) | NO   |     | NULL    |       |
+| deptno      | int(11)     | YES  | MUL | NULL    |       |
+| mngrno      | int(11)     | YES  |     | NULL    |       |
+| doj         | date        | NO   |     | NULL    |       |
+| address     | varchar(20) | YES  |     | NULL    |       |
+| city        | varchar(20) | YES  |     | NULL    |       |
+| pincode     | int(11)     | YES  |     | NULL    |       |
+| designation | varchar(20) | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+
+DEPTNO: PRIMARY KEY 
+DNAME: 
+YEAR:Year of establishment) NOT NULL
+
+
+mysql> desc departments;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| deptno | int(11)     | NO   | PRI | NULL    |       |
+| dname  | varchar(20) | YES  |     | NULL    |       |
+| year   | int(11)     | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> select * from departments;
++--------+----------+------+
+| deptno | dname    | year |
++--------+----------+------+
+|      5 | sales    | 1990 |
+|     10 | purchase | 1992 |
+|     15 | design   | 1995 |
+|     20 | security | 1990 |
+|     30 | billing  | 1990 |
++--------+----------+------+
+5 rows in set (0.00 sec)
+
+
+mysql> select * from employee;
++-----+-----------+--------+--------+--------+------------+-------------+---------+---------+-------------+
+| eno | ename     | salary | deptno | mngrno | doj        | address     | city    | pincode | designation |
++-----+-----------+--------+--------+--------+------------+-------------+---------+---------+-------------+
+|   1 | bheem     | 2000   |      5 |     12 | 1992-02-12 | dholakpur   | kochi   |   67001 | clerk       |
+|   2 | raju      | 2500   |      5 |     12 | 1992-03-12 | dholakpur   | kochi   |   67001 | clerk       |
+|   3 | khalia    | 2200   |     10 |     13 | 2005-03-12 | dholakpur   | mumbai  |   67002 | clerk       |
+|   4 | dholu     | 2350   |     10 |     13 | 2012-04-12 | dholakpur   | mumbai  |   67002 | clerk       |
+|   6 | abh       | 2350   |     15 |     14 | 2005-03-12 | dholakpuri  | chennai |   67003 | clerk       |
+|   7 | agh       | 2340   |     15 |     14 | 2006-03-12 | dholakpuri  | chennai |   67003 | clerk       |
+|   8 | jaggu     | 2200   |     10 |     16 | 2015-03-12 | dholakpur   | kochi   |   67001 | clerk       |
+|   9 | chutki    | 2550   |     20 |     16 | 2005-04-12 | dholakpuri  | chennai |   67003 | clerk       |
+|  11 | nubita    | 2550   |     30 |     17 | 2005-04-12 | dholakpuri  | chennai |   67003 | clerk       |
+|  12 | berlin    | 15000  |      5 |    100 | 2013-05-06 | kalamasseri | kochi   |   67001 | manager     |
+|  13 | denver    | 20000  |     10 |    100 | 2012-05-06 | kalamasseri | kochi   |   67001 | manager     |
+|  14 | nairobi   | 24000  |     15 |    100 | 2010-05-06 | kalamasseri | kochi   |   67001 | manager     |
+|  16 | oslo      | 50000  |     20 |    100 | 2006-05-06 | kalamasseri | kochi   |   67001 | manager     |
+|  17 | helsinki  | 50500  |     30 |    100 | 2007-04-06 | kalamasseri | kochi   |   67001 | manager     |
+|  18 | professor | 100000 |     30 |    100 | 2015-04-06 | kalamasseri | kochi   |   67001 | manager     |
+|  19 | suzuki    | 3550   |     30 |     17 | 2006-04-12 | dholakpuri  | chennai |   67003 | clerk       |
++-----+-----------+--------+--------+--------+------------+-------------+---------+---------+-------------+
+16 rows in set (0.00 sec)
+
+
+a)
+
+mysql> select ename from employee where doj>'1995-12-01' and city='kochi';
++-----------+
+| ename     |
++-----------+
+| jaggu     |
+| berlin    |
+| denver    |
+| nairobi   |
+| oslo      |
+| helsinki  |
+| professor |
++-----------+
+7 rows in set (0.00 sec)
+
+b)
+
+mysql> select * from employee where deptno!=30;
++-----+---------+--------+--------+--------+------------+-------------+---------+---------+-------------+
+| eno | ename   | salary | deptno | mngrno | doj        | address     | city    | pincode | designation |
++-----+---------+--------+--------+--------+------------+-------------+---------+---------+-------------+
+|   1 | bheem   | 2000   |      5 |     12 | 1992-02-12 | dholakpur   | kochi   |   67001 | clerk       |
+|   2 | raju    | 2500   |      5 |     12 | 1992-03-12 | dholakpur   | kochi   |   67001 | clerk       |
+|   3 | khalia  | 2200   |     10 |     13 | 2005-03-12 | dholakpur   | mumbai  |   67002 | clerk       |
+|   4 | dholu   | 2350   |     10 |     13 | 2012-04-12 | dholakpur   | mumbai  |   67002 | clerk       |
+|   6 | abh     | 2350   |     15 |     14 | 2005-03-12 | dholakpuri  | chennai |   67003 | clerk       |
+|   7 | agh     | 2340   |     15 |     14 | 2006-03-12 | dholakpuri  | chennai |   67003 | clerk       |
+|   8 | jaggu   | 2200   |     10 |     16 | 2015-03-12 | dholakpur   | kochi   |   67001 | clerk       |
+|   9 | chutki  | 2550   |     20 |     16 | 2005-04-12 | dholakpuri  | chennai |   67003 | clerk       |
+|  12 | berlin  | 15000  |      5 |    100 | 2013-05-06 | kalamasseri | kochi   |   67001 | manager     |
+|  13 | denver  | 20000  |     10 |    100 | 2012-05-06 | kalamasseri | kochi   |   67001 | manager     |
+|  14 | nairobi | 24000  |     15 |    100 | 2010-05-06 | kalamasseri | kochi   |   67001 | manager     |
+|  16 | oslo    | 50000  |     20 |    100 | 2006-05-06 | kalamasseri | kochi   |   67001 | manager     |
++-----+---------+--------+--------+--------+------------+-------------+---------+---------+-------------+
+
+
+c)
+
+mysql> select ename,doj from employee,departments where dname='sales' 
+and employee.deptno=departments.deptno;
++--------+------------+
+| ename  | doj        |
++--------+------------+
+| bheem  | 1992-02-12 |
+| raju   | 1992-03-12 |
+| berlin | 2013-05-06 |
++--------+------------+
+
+d)
+
+mysql> select ename from employee where designation!='manager';
++--------+
+| ename  |
++--------+
+| bheem  |
+| raju   |
+| khalia |
+| dholu  |
+| abh    |
+| agh    |
+| jaggu  |
+| chutki |
+| nubita |
+| suzuki |
++--------+
+10 rows in set (0.00 sec)
+
+e)
+
+mysql> select * from employee,departments where year(doj)='2005' 
+and dname='purchase' and employee.deptno=departments.deptno;
++-----+--------+--------+--------+--------+------------+-----------+--------+---------+-------------+--------+----------+------+
+| eno | ename  | salary | deptno | mngrno | doj        | address   | city   | pincode | designation | deptno | dname    | year |
++-----+--------+--------+--------+--------+------------+-----------+--------+---------+-------------+--------+----------+------+
+|   3 | khalia | 2200   |     10 |     13 | 2005-03-12 | dholakpur | mumbai |   67002 | clerk       |     10 | purchase | 1992 |
++-----+--------+--------+--------+--------+------------+-----------+--------+---------+-------------+--------+----------+------+
+
+f)
+
+mysql> select 'EVERY YEAR',ename,'EARNS',salary*12
+as annual_salary from employee;
++------------+-----------+-------+---------------+
+| EVERY YEAR | ename     | EARNS | annual_salary |
++------------+-----------+-------+---------------+
+| EVERY YEAR | bheem     | EARNS |         24000 |
+| EVERY YEAR | raju      | EARNS |         30000 |
+| EVERY YEAR | khalia    | EARNS |         26400 |
+| EVERY YEAR | dholu     | EARNS |         28200 |
+| EVERY YEAR | abh       | EARNS |         28200 |
+| EVERY YEAR | agh       | EARNS |         28080 |
+| EVERY YEAR | jaggu     | EARNS |         26400 |
+| EVERY YEAR | chutki    | EARNS |         30600 |
+| EVERY YEAR | nubita    | EARNS |         30600 |
+| EVERY YEAR | berlin    | EARNS |        180000 |
+| EVERY YEAR | denver    | EARNS |        240000 |
+| EVERY YEAR | nairobi   | EARNS |        288000 |
+| EVERY YEAR | oslo      | EARNS |        600000 |
+| EVERY YEAR | helsinki  | EARNS |        606000 |
+| EVERY YEAR | professor | EARNS |       1200000 |
+| EVERY YEAR | suzuki    | EARNS |         42600 |
++------------+-----------+-------+---------------+
+16 rows in set (0.00 sec)
+
+g)
+
+
+mysql> select count(eno) as count_of_employees from employee;
++--------------------+
+| count_of_employees |
++--------------------+
+|                 16 |
++--------------------+
+1 row in set (0.00 sec)
+
+h)
+
+mysql> select dname,count(employee.deptno) as count 
+from employee,departments 
+where employee.deptno=departments.deptno group by employee.deptno;
++----------+-------+
+| dname    | count |
++----------+-------+
+| sales    |     3 |
+| purchase |     4 |
+| design   |     3 |
+| security |     2 |
+| billing  |     4 |
++----------+-------+
+5 rows in set (0.00 sec)
+
+i)
+
+mysql> select d.dname,e.designation,max(e.salary) 
+from employee e,departments d 
+where d.deptno=e.deptno group by dname,designation;
++----------+-------------+---------------+
+| dname    | designation | max(e.salary) |
++----------+-------------+---------------+
+| billing  | clerk       |          3550 |
+| billing  | manager     |        100000 |
+| design   | clerk       |          2350 |
+| design   | manager     |         24000 |
+| purchase | clerk       |          2350 |
+| purchase | manager     |         20000 |
+| sales    | clerk       |          2500 |
+| sales    | manager     |         15000 |
+| security | clerk       |          2550 |
+| security | manager     |         50000 |
++----------+-------------+---------------+
+
+j)
+
+mysql> select d.dname,e.designation,min(e.salary) 
+from employee e,departments d
+ where designation="manager" and d.deptno=e.deptno group by dname;
++----------+-------------+---------------+
+| dname    | designation | min(e.salary) |
++----------+-------------+---------------+
+| billing  | manager     |         50500 |
+| design   | manager     |         24000 |
+| purchase | manager     |         20000 |
+| sales    | manager     |         15000 |
+| security | manager     |         50000 |
++----------+-------------+---------------+
+5 rows in set (0.00 sec)
+
+k)
+
+mysql> select * from employee where ename like 'a%h';
++-----+-------+--------+--------+--------+------------+------------+---------+---------+-------------+
+| eno | ename | salary | deptno | mngrno | doj        | address    | city    | pincode | designation |
++-----+-------+--------+--------+--------+------------+------------+---------+---------+-------------+
+|   6 | abh   | 2350   |     15 |     14 | 2005-03-12 | dholakpuri | chennai |   67003 | clerk       |
+|   7 | agh   | 2340   |     15 |     14 | 2006-03-12 | dholakpuri | chennai |   67003 | clerk       |
++-----+-------+--------+--------+--------+------------+------------+---------+---------+-------------+
+2 rows in set (0.00 sec)
+
+l)
+
+mysql> select ename,dname,designation from employee,departments
+ where designation='clerk' and employee.deptno=departments.deptno;
++--------+----------+-------------+
+| ename  | dname    | designation |
++--------+----------+-------------+
+| bheem  | sales    | clerk       |
+| raju   | sales    | clerk       |
+| khalia | purchase | clerk       |
+| dholu  | purchase | clerk       |
+| jaggu  | purchase | clerk       |
+| abh    | design   | clerk       |
+| agh    | design   | clerk       |
+| chutki | security | clerk       |
+| nubita | billing  | clerk       |
+| suzuki | billing  | clerk       |
++--------+----------+-------------+
+10 rows in set (0.00 sec)
+
+m)
+
+mysql> update employee set salary=salary+((20*salary)/100);
+
+
+mysql> select * from employee;
++-----+-----------+--------+--------+--------+------------+-------------+---------+---------+-------------+
+| eno | ename     | salary | deptno | mngrno | doj        | address     | city    | pincode | designation |
++-----+-----------+--------+--------+--------+------------+-------------+---------+---------+-------------+
+|   1 | bheem     |   2400 |      5 |     12 | 1992-02-12 | dholakpur   | kochi   |   67001 | clerk       |
+|   2 | raju      |   3000 |      5 |     12 | 1992-03-12 | dholakpur   | kochi   |   67001 | clerk       |
+|   3 | khalia    |   2640 |     10 |     13 | 2005-03-12 | dholakpur   | mumbai  |   67002 | clerk       |
+|   4 | dholu     |   2820 |     10 |     13 | 2012-04-12 | dholakpur   | mumbai  |   67002 | clerk       |
+|   6 | abh       |   2820 |     15 |     14 | 2005-03-12 | dholakpuri  | chennai |   67003 | clerk       |
+|   7 | agh       |   2808 |     15 |     14 | 2006-03-12 | dholakpuri  | chennai |   67003 | clerk       |
+|   8 | jaggu     |   2640 |     10 |     16 | 2015-03-12 | dholakpur   | kochi   |   67001 | clerk       |
+|   9 | chutki    |   3060 |     20 |     16 | 2005-04-12 | dholakpuri  | chennai |   67003 | clerk       |
+|  11 | nubita    |   3060 |     30 |     17 | 2005-04-12 | dholakpuri  | chennai |   67003 | clerk       |
+|  12 | berlin    |  18000 |      5 |    100 | 2013-05-06 | kalamasseri | kochi   |   67001 | manager     |
+|  13 | denver    |  24000 |     10 |    100 | 2012-05-06 | kalamasseri | kochi   |   67001 | manager     |
+|  14 | nairobi   |  28800 |     15 |    100 | 2010-05-06 | kalamasseri | kochi   |   67001 | manager     |
+|  16 | oslo      |  60000 |     20 |    100 | 2006-05-06 | kalamasseri | kochi   |   67001 | manager     |
+|  17 | helsinki  |  60600 |     30 |    100 | 2007-04-06 | kalamasseri | kochi   |   67001 | manager     |
+|  18 | professor | 120000 |     30 |    100 | 2015-04-06 | kalamasseri | kochi   |   67001 | manager     |
+|  19 | suzuki    |   4260 |     30 |     17 | 2006-04-12 | dholakpuri  | chennai |   67003 | clerk       |
++-----+-----------+--------+--------+--------+------------+-------------+---------+---------+-------------+
+16 rows in set (0.00 sec)
+
+n)
+
+mysql> update employee
+     set salary=salary+10000
+     where salary<=6500;
+
+
+mysql> select * from employee;
++-----+-----------+--------+--------+--------+------------+-------------+---------+---------+-------------+
+| eno | ename     | salary | deptno | mngrno | doj        | address     | city    | pincode | designation |
++-----+-----------+--------+--------+--------+------------+-------------+---------+---------+-------------+
+|   1 | bheem     |  12400 |      5 |     12 | 1992-02-12 | dholakpur   | kochi   |   67001 | clerk       |
+|   2 | raju      |  13000 |      5 |     12 | 1992-03-12 | dholakpur   | kochi   |   67001 | clerk       |
+|   3 | khalia    |  12640 |     10 |     13 | 2005-03-12 | dholakpur   | mumbai  |   67002 | clerk       |
+|   4 | dholu     |  12820 |     10 |     13 | 2012-04-12 | dholakpur   | mumbai  |   67002 | clerk       |
+|   6 | abh       |  12820 |     15 |     14 | 2005-03-12 | dholakpuri  | chennai |   67003 | clerk       |
+|   7 | agh       |  12808 |     15 |     14 | 2006-03-12 | dholakpuri  | chennai |   67003 | clerk       |
+|   8 | jaggu     |  12640 |     10 |     16 | 2015-03-12 | dholakpur   | kochi   |   67001 | clerk       |
+|   9 | chutki    |  13060 |     20 |     16 | 2005-04-12 | dholakpuri  | chennai |   67003 | clerk       |
+|  11 | nubita    |  13060 |     30 |     17 | 2005-04-12 | dholakpuri  | chennai |   67003 | clerk       |
+|  12 | berlin    |  18000 |      5 |    100 | 2013-05-06 | kalamasseri | kochi   |   67001 | manager     |
+|  13 | denver    |  24000 |     10 |    100 | 2012-05-06 | kalamasseri | kochi   |   67001 | manager     |
+|  14 | nairobi   |  28800 |     15 |    100 | 2010-05-06 | kalamasseri | kochi   |   67001 | manager     |
+|  16 | oslo      |  60000 |     20 |    100 | 2006-05-06 | kalamasseri | kochi   |   67001 | manager     |
+|  17 | helsinki  |  60600 |     30 |    100 | 2007-04-06 | kalamasseri | kochi   |   67001 | manager     |
+|  18 | professor | 120000 |     30 |    100 | 2015-04-06 | kalamasseri | kochi   |   67001 | manager     |
+|  19 | suzuki    |  14260 |     30 |     17 | 2006-04-12 | dholakpuri  | chennai |   67003 | clerk       |
++-----+-----------+--------+--------+--------+------------+-------------+---------+---------+-------------+
+
+
+o) update employee
+   set designation="senior clerk"
+   where designation='clerk' and salary>10000;
+
+mysql> select * from employee;
++-----+-----------+--------+--------+--------+------------+-------------+---------+---------+--------------+
+| eno | ename     | salary | deptno | mngrno | doj        | address     | city    | pincode | designation  |
++-----+-----------+--------+--------+--------+------------+-------------+---------+---------+--------------+
+|   1 | bheem     |  12400 |      5 |     12 | 1992-02-12 | dholakpur   | kochi   |   67001 | senior clerk |
+|   2 | raju      |  13000 |      5 |     12 | 1992-03-12 | dholakpur   | kochi   |   67001 | senior clerk |
+|   3 | khalia    |  12640 |     10 |     13 | 2005-03-12 | dholakpur   | mumbai  |   67002 | senior clerk |
+|   4 | dholu     |  12820 |     10 |     13 | 2012-04-12 | dholakpur   | mumbai  |   67002 | senior clerk |
+|   6 | abh       |  12820 |     15 |     14 | 2005-03-12 | dholakpuri  | chennai |   67003 | senior clerk |
+|   7 | agh       |  12808 |     15 |     14 | 2006-03-12 | dholakpuri  | chennai |   67003 | senior clerk |
+|   8 | jaggu     |  12640 |     10 |     16 | 2015-03-12 | dholakpur   | kochi   |   67001 | senior clerk |
+|   9 | chutki    |  13060 |     20 |     16 | 2005-04-12 | dholakpuri  | chennai |   67003 | senior clerk |
+|  11 | nubita    |  13060 |     30 |     17 | 2005-04-12 | dholakpuri  | chennai |   67003 | senior clerk |
+|  12 | berlin    |  18000 |      5 |    100 | 2013-05-06 | kalamasseri | kochi   |   67001 | manager      |
+|  13 | denver    |  24000 |     10 |    100 | 2012-05-06 | kalamasseri | kochi   |   67001 | manager      |
+|  14 | nairobi   |  28800 |     15 |    100 | 2010-05-06 | kalamasseri | kochi   |   67001 | manager      |
+|  16 | oslo      |  60000 |     20 |    100 | 2006-05-06 | kalamasseri | kochi   |   67001 | manager      |
+|  17 | helsinki  |  60600 |     30 |    100 | 2007-04-06 | kalamasseri | kochi   |   67001 | manager      |
+|  18 | professor | 120000 |     30 |    100 | 2015-04-06 | kalamasseri | kochi   |   67001 | manager      |
+|  19 | suzuki    |  14260 |     30 |     17 | 2006-04-12 | dholakpuri  | chennai |   67003 | senior clerk |
++-----+-----------+--------+--------+--------+------------+-------------+---------+---------+--------------+
+16 rows in set (0.00 sec)
+
+p)
+
+mysql> delete from employee
+     where year(doj)<1998;
+
+mysql> select * from employee;
++-----+-----------+--------+--------+--------+------------+-------------+---------+---------+--------------+
+| eno | ename     | salary | deptno | mngrno | doj        | address     | city    | pincode | designation  |
++-----+-----------+--------+--------+--------+------------+-------------+---------+---------+--------------+
+|   3 | khalia    |  12640 |     10 |     13 | 2005-03-12 | dholakpur   | mumbai  |   67002 | senior clerk |
+|   4 | dholu     |  12820 |     10 |     13 | 2012-04-12 | dholakpur   | mumbai  |   67002 | senior clerk |
+|   6 | abh       |  12820 |     15 |     14 | 2005-03-12 | dholakpuri  | chennai |   67003 | senior clerk |
+|   7 | agh       |  12808 |     15 |     14 | 2006-03-12 | dholakpuri  | chennai |   67003 | senior clerk |
+|   8 | jaggu     |  12640 |     10 |     16 | 2015-03-12 | dholakpur   | kochi   |   67001 | senior clerk |
+|   9 | chutki    |  13060 |     20 |     16 | 2005-04-12 | dholakpuri  | chennai |   67003 | senior clerk |
+|  11 | nubita    |  13060 |     30 |     17 | 2005-04-12 | dholakpuri  | chennai |   67003 | senior clerk |
+|  12 | berlin    |  18000 |      5 |    100 | 2013-05-06 | kalamasseri | kochi   |   67001 | manager      |
+|  13 | denver    |  24000 |     10 |    100 | 2012-05-06 | kalamasseri | kochi   |   67001 | manager      |
+|  14 | nairobi   |  28800 |     15 |    100 | 2010-05-06 | kalamasseri | kochi   |   67001 | manager      |
+|  16 | oslo      |  60000 |     20 |    100 | 2006-05-06 | kalamasseri | kochi   |   67001 | manager      |
+|  17 | helsinki  |  60600 |     30 |    100 | 2007-04-06 | kalamasseri | kochi   |   67001 | manager      |
+|  18 | professor | 120000 |     30 |    100 | 2015-04-06 | kalamasseri | kochi   |   67001 | manager      |
+|  19 | suzuki    |  14260 |     30 |     17 | 2006-04-12 | dholakpuri  | chennai |   67003 | senior clerk |
++-----+-----------+--------+--------+--------+------------+-------------+---------+---------+--------------+
+
+q)
+
+mysql> delete from employee
+        where deptno=5;
+
+mysql> select * from employee;
++-----+-----------+--------+--------+--------+------------+-------------+---------+---------+--------------+
+| eno | ename     | salary | deptno | mngrno | doj        | address     | city    | pincode | designation  |
++-----+-----------+--------+--------+--------+------------+-------------+---------+---------+--------------+
+|   3 | khalia    |  12640 |     10 |     13 | 2005-03-12 | dholakpur   | mumbai  |   67002 | senior clerk |
+|   4 | dholu     |  12820 |     10 |     13 | 2012-04-12 | dholakpur   | mumbai  |   67002 | senior clerk |
+|   6 | abh       |  12820 |     15 |     14 | 2005-03-12 | dholakpuri  | chennai |   67003 | senior clerk |
+|   7 | agh       |  12808 |     15 |     14 | 2006-03-12 | dholakpuri  | chennai |   67003 | senior clerk |
+|   8 | jaggu     |  12640 |     10 |     16 | 2015-03-12 | dholakpur   | kochi   |   67001 | senior clerk |
+|   9 | chutki    |  13060 |     20 |     16 | 2005-04-12 | dholakpuri  | chennai |   67003 | senior clerk |
+|  11 | nubita    |  13060 |     30 |     17 | 2005-04-12 | dholakpuri  | chennai |   67003 | senior clerk |
+|  13 | denver    |  24000 |     10 |    100 | 2012-05-06 | kalamasseri | kochi   |   67001 | manager      |
+|  14 | nairobi   |  28800 |     15 |    100 | 2010-05-06 | kalamasseri | kochi   |   67001 | manager      |
+|  16 | oslo      |  60000 |     20 |    100 | 2006-05-06 | kalamasseri | kochi   |   67001 | manager      |
+|  17 | helsinki  |  60600 |     30 |    100 | 2007-04-06 | kalamasseri | kochi   |   67001 | manager      |
+|  18 | professor | 120000 |     30 |    100 | 2015-04-06 | kalamasseri | kochi   |   67001 | manager      |
+|  19 | suzuki    |  14260 |     30 |     17 | 2006-04-12 | dholakpuri  | chennai |   67003 | senior clerk |
++-----+-----------+--------+--------+--------+------------+-------------+---------+---------+--------------+
+13 rows in set (0.10 sec)

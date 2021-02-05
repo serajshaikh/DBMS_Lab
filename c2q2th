@@ -1,0 +1,99 @@
+mysql> create database employeejoin;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> use employeejoin;
+Database changed
+mysql> CREATE TABLE employee(ENO INT,ENAME VARCHAR(20),SALARY INT,DOJ DATE,DESIGNATION VARCHAR(20),ADDRESS VARCHAR(20),CITY VARCHAR(20),PINCODE INT,DEPTNO INT,MNGRNO INT);
+Query OK, 0 rows affected (0.26 sec)
+
+mysql> create table department(DEPTNO INT,DNAME VARCHAR(20));
+Query OK, 0 rows affected (0.29 sec)
+
+mysql> INSERT INTO department(DEPTNO,DNAME)VALUES(20,'SALES');
+Query OK, 1 row affected (0.06 sec)
+
+mysql> INSERT INTO department(DEPTNO,DNAME)VALUES(30,'PURCHASE');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> INSERT INTO department(DEPTNO,DNAME)VALUES(10,'MANAGE');
+Query OK, 1 row affected (0.04 sec)
+
+
+mysql> insert into employee(ENO,ENAME,SALARY,DOJ,DESIGNATION,ADDRESS,CITY, PINCODE,DEPTNO,MNGRNO) VALUES (1,'ASLAM',5000,'1990-01-05','ASSISTANT','ALUVA', 'COCHI',683101,10,20218001);
+Query OK, 1 row affected (0.05 sec)
+
+mysql> insert into employee(ENO,ENAME,SALARY,DOJ,DESIGNATION,ADDRESS,CITY,PINCODE, DEPTNO,MNGRNO) VALUES (2,'SAURAV',6000,'1991-01-05','MANAGER','KALAMASSERY', 'kOCHI',683101,10,20218002);
+Query OK, 1 row affected (0.06 sec)
+
+mysql> insert into employee(ENO,ENAME,SALARY,DOJ,DESIGNATION,ADDRESS,CITY, PINCODE,DEPTNO,MNGRNO) VALUES (3,'ABDUL R',15000,'1995-01-05','HOD', 'KALAMASSERY','COCHI',682021,10,20218003);
+Query OK, 1 row affected (0.04 sec)
+
+mysql> insert into employee(ENO,ENAME,SALARY,DOJ,DESIGNATION,ADDRESS,CITY, PINCODE,DEPTNO,MNGRNO) VALUES (5,'MOHAN',15000,'1995-01-05','HOD', 'KALAMASSERY','COCHI',682021,30,20218003);
+Query OK, 1 row affected (0.04 sec)
+
+mysql> insert into employee(ENO,ENAME,SALARY,DOJ,DESIGNATION,ADDRESS,CITY, PINCODE,DEPTNO,MNGRNO) VALUES (4,'THOMAS',15000,'1995-01-05','HOD', 'KALAMASSERY','COCHI',682021,20,20218003);
+Query OK, 1 row affected (0.04 sec)
+
+mysql> select * from employee;
++------+---------+--------+------------+-------------+-------------+-------+---------+--------+----------+
+| ENO  | ENAME   | SALARY | DOJ        | DESIGNATION | ADDRESS     | CITY  | PINCODE | DEPTNO | MNGRNO   |
++------+---------+--------+------------+-------------+-------------+-------+---------+--------+----------+
+|    1 | ASLAM   |   5000 | 1990-01-05 | ASSISTANT   | ALUVA       | COCHI |  683101 |     10 | 20218001 |
+|    2 | SAURAV  |   6000 | 1991-01-05 | MANAGER     | KALAMASSERY | kOCHI |  683101 |     10 | 20218002 |
+|    3 | ABDUL R |  15000 | 1995-01-05 | HOD         | KALAMASSERY | COCHI |  682021 |     10 | 20218003 |
+|    5 | MOHAN   |  15000 | 1995-01-05 | HOD         | KALAMASSERY | COCHI |  682021 |     30 | 20218003 |
+|    4 | THOMAS  |  15000 | 1995-01-05 | HOD         | KALAMASSERY | COCHI |  682021 |     20 | 20218003 |
++------+---------+--------+------------+-------------+-------------+-------+---------+--------+----------+
+5 rows in set (0.00 sec)
+
+mysql> select ENAME,DESIGNATION,DNAME from employee join department on employee.DEPTNO = department.DEPTNO where employee.DESIGNATION = 'HOD';
++---------+-------------+----------+
+| ENAME   | DESIGNATION | DNAME    |
++---------+-------------+----------+
+| THOMAS  | HOD         | SALES    |
+| MOHAN   | HOD         | PURCHASE |
+| ABDUL R | HOD         | MANAGE   |
++---------+-------------+----------+
+3 rows in set (0.00 sec)
+
+mysql> select * from employee left join department on employee.DEPTNO = department.DEPTNO;
++------+---------+--------+------------+-------------+-------------+-------+---------+--------+----------+--------+----------+
+| ENO  | ENAME   | SALARY | DOJ        | DESIGNATION | ADDRESS     | CITY  | PINCODE | DEPTNO | MNGRNO   | DEPTNO | DNAME    |
++------+---------+--------+------------+-------------+-------------+-------+---------+--------+----------+--------+----------+
+|    4 | THOMAS  |  15000 | 1995-01-05 | HOD         | KALAMASSERY | COCHI |  682021 |     20 | 20218003 |     20 | SALES    |
+|    5 | MOHAN   |  15000 | 1995-01-05 | HOD         | KALAMASSERY | COCHI |  682021 |     30 | 20218003 |     30 | PURCHASE |
+|    1 | ASLAM   |   5000 | 1990-01-05 | ASSISTANT   | ALUVA       | COCHI |  683101 |     10 | 20218001 |     10 | MANAGE   |
+|    2 | SAURAV  |   6000 | 1991-01-05 | MANAGER     | KALAMASSERY | kOCHI |  683101 |     10 | 20218002 |     10 | MANAGE   |
+|    3 | ABDUL R |  15000 | 1995-01-05 | HOD         | KALAMASSERY | COCHI |  682021 |     10 | 20218003 |     10 | MANAGE   |
++------+---------+--------+------------+-------------+-------------+-------+---------+--------+----------+--------+----------+
+5 rows in set (0.00 sec)
+
+mysql> insert into department(DEPTNO,DNAME)VALUES (40,'HR');
+Query OK, 1 row affected (0.05 sec)
+
+mysql> select * from employee right join department on employee.DEPTNO = department.DEPTNO;
++------+---------+--------+------------+-------------+-------------+-------+---------+--------+----------+--------+----------+
+| ENO  | ENAME   | SALARY | DOJ        | DESIGNATION | ADDRESS     | CITY  | PINCODE | DEPTNO | MNGRNO   | DEPTNO | DNAME    |
++------+---------+--------+------------+-------------+-------------+-------+---------+--------+----------+--------+----------+
+|    1 | ASLAM   |   5000 | 1990-01-05 | ASSISTANT   | ALUVA       | COCHI |  683101 |     10 | 20218001 |     10 | MANAGE   |
+|    2 | SAURAV  |   6000 | 1991-01-05 | MANAGER     | KALAMASSERY | kOCHI |  683101 |     10 | 20218002 |     10 | MANAGE   |
+|    3 | ABDUL R |  15000 | 1995-01-05 | HOD         | KALAMASSERY | COCHI |  682021 |     10 | 20218003 |     10 | MANAGE   |
+|    5 | MOHAN   |  15000 | 1995-01-05 | HOD         | KALAMASSERY | COCHI |  682021 |     30 | 20218003 |     30 | PURCHASE |
+|    4 | THOMAS  |  15000 | 1995-01-05 | HOD         | KALAMASSERY | COCHI |  682021 |     20 | 20218003 |     20 | SALES    |
+| NULL | NULL    |   NULL | NULL       | NULL        | NULL        | NULL  |    NULL |   NULL |     NULL |     40 | HR       |
++------+---------+--------+------------+-------------+-------------+-------+---------+--------+----------+--------+----------+
+6 rows in set (0.00 sec)
+
+mysql> select * from employee right join department on employee.DEPTNO = department.DEPTNO UNION select * from employee left join department on employee.DEPTNO = department.DEPTNO;
++------+---------+--------+------------+-------------+-------------+-------+---------+--------+----------+--------+----------+
+| ENO  | ENAME   | SALARY | DOJ        | DESIGNATION | ADDRESS     | CITY  | PINCODE | DEPTNO | MNGRNO   | DEPTNO | DNAME    |
++------+---------+--------+------------+-------------+-------------+-------+---------+--------+----------+--------+----------+
+|    1 | ASLAM   |   5000 | 1990-01-05 | ASSISTANT   | ALUVA       | COCHI |  683101 |     10 | 20218001 |     10 | MANAGE   |
+|    2 | SAURAV  |   6000 | 1991-01-05 | MANAGER     | KALAMASSERY | kOCHI |  683101 |     10 | 20218002 |     10 | MANAGE   |
+|    3 | ABDUL R |  15000 | 1995-01-05 | HOD         | KALAMASSERY | COCHI |  682021 |     10 | 20218003 |     10 | MANAGE   |
+|    5 | MOHAN   |  15000 | 1995-01-05 | HOD         | KALAMASSERY | COCHI |  682021 |     30 | 20218003 |     30 | PURCHASE |
+|    4 | THOMAS  |  15000 | 1995-01-05 | HOD         | KALAMASSERY | COCHI |  682021 |     20 | 20218003 |     20 | SALES    |
+| NULL | NULL    |   NULL | NULL       | NULL        | NULL        | NULL  |    NULL |   NULL |     NULL |     40 | HR       |
++------+---------+--------+------------+-------------+-------------+-------+---------+--------+----------+--------+----------+
+6 rows in set (0.00 sec)
+

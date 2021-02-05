@@ -1,0 +1,126 @@
+
+mysql> create database studtable;
+
+mysql> use studtable;
+Database changed
+mysql> create table student(roll int,name varchar(20),dob date,branch char(20));
+Query OK, 0 rows affected (0.26 sec)
+
+mysql> create table students(roll int,name varchar(20),dob date,branch char(20),primary key(roll));
+Query OK, 0 rows affected (0.26 sec)
+
+mysql> insert into students(roll,name,dob,branch)values(1,'sourav','1999-10-10','cse');
+Query OK, 1 row affected (0.06 sec)
+
+mysql> insert into students(roll,name,dob,branch)values(2,'sreeraj','1999-08-07','cse');
+Query OK, 1 row affected (0.05 sec)
+
+mysql> insert into students(roll,name,dob,branch)values(3,'suraj','2000-06-07','cse');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> insert into students(roll,name,dob,branch)values(4,'thomas','1999-08-09','cse');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> insert into students(roll,name,dob,branch)values(5,'abc','1998-08-01','it');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> select * from students;
++------+---------+------------+--------+
+| roll | name    | dob        | branch |
++------+---------+------------+--------+
+|    1 | sourav  | 1999-10-10 | cse    |
+|    2 | sreeraj | 1999-08-07 | cse    |
+|    3 | suraj   | 2000-06-07 | cse    |
+|    4 | thomas  | 1999-08-09 | cse    |
+|    5 | abc     | 1998-08-01 | it     |
++------+---------+------------+--------+
+5 rows in set (0.00 sec)
+
+mysql> select *,year(curdate())-year(dob) as age from students;
++------+---------+------------+--------+------+
+| roll | name    | dob        | branch | age  |
++------+---------+------------+--------+------+
+|    1 | sourav  | 1999-10-10 | cse    |   21 |
+|    2 | sreeraj | 1999-08-07 | cse    |   21 |
+|    3 | suraj   | 2000-06-07 | cse    |   20 |
+|    4 | thomas  | 1999-08-09 | cse    |   21 |
+|    5 | abc     | 1998-08-01 | it     |   22 |
++------+---------+------------+--------+------+
+5 rows in set (0.01 sec)
+
+
+
+mysql> alter table students add marks1 int;
+Query OK, 0 rows affected (0.65 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table students add marks2 int;
+Query OK, 0 rows affected (0.71 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table students add constraint checkmark check(marks1<=100 && marks2<=100);
+Query OK, 0 rows affected (0.04 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> update students set marks1=99 where roll=1;
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update students set marks1=59 where roll=2;
+Query OK, 1 row affected (0.03 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update students set marks1=56 where roll=3;
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update students set marks1=78 where roll=4;
+Query OK, 1 row affected (0.03 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update students set marks1=98 where roll=5;
+Query OK, 1 row affected (0.05 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+
+mysql> update students set marks2=98 where roll=1;
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update students set marks2=99 where roll=2;
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update students set marks2=96 where roll=3;
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update students set marks2=90 where roll=4;
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update students set marks2=80 where roll=5;
+Query OK, 1 row affected (0.02 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select *,marks1+marks2 as 'total' from students order by branch,marks1+marks2 desc;
++------+---------+------------+--------+--------+--------+-------+
+| roll | name    | dob        | branch | marks1 | marks2 | total |
++------+---------+------------+--------+--------+--------+-------+
+|    1 | sourav  | 1999-10-10 | cse    |     99 |     98 |   197 |
+|    4 | thomas  | 1999-08-09 | cse    |     78 |     90 |   168 |
+|    2 | sreeraj | 1999-08-07 | cse    |     59 |     99 |   158 |
+|    3 | suraj   | 2000-06-07 | cse    |     56 |     96 |   152 |
+|    5 | abc     | 1998-08-01 | it     |     98 |     80 |   178 |
++------+---------+------------+--------+--------+--------+-------+
+5 rows in set (0.00 sec)
+
+mysql> select branch,max(marks1+marks2) as 'highest',min(marks1+marks2) as 'lowest',avg(marks1+marks2) as 'average' from students group by branch;
++--------+---------+--------+----------+
+| branch | highest | lowest | average  |
++--------+---------+--------+----------+
+| cse    |     197 |    152 | 168.7500 |
+| it     |     178 |    178 | 178.0000 |
++--------+---------+--------+----------+
+2 rows in set (0.00 sec)
+

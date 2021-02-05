@@ -1,0 +1,85 @@
+mysql> create database lab;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> use lab;
+Database changed
+mysql> create table account(
+    -> acc_no int primary key,
+    -> name varchar(20),
+    -> bal int
+    -> );
+Query OK, 0 rows affected (0.39 sec)
+
+mysql> desc account;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| acc_no | int(11)     | NO   | PRI | NULL    |       |
+| name   | varchar(20) | YES  |     | NULL    |       |
+| bal    | int(11)     | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> select * from account;
++--------+------+-------+
+| acc_no | name | bal   |
++--------+------+-------+
+|      1 | ram  | 10000 |
+|      2 | raj  | 20000 |
+|      3 | taj  | 20500 |
++--------+------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc trans;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| acc_no | int(11)     | YES  | MUL | NULL    |       |
+| type   | varchar(20) | YES  |     | NULL    |       |
+| amount | int(11)     | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> delimiter ##
+mysql> create trigger t1
+    -> after insert on trans
+    -> for each row
+    -> begin
+    -> if new.type='deposit' then
+    -> update account set account.bal=account.bal+new.amount;
+    -> end if;
+    -> if new.type='withdraw' then
+    -> update account set account.bal=account.bal-new.amount;
+    -> end if;
+    -> end ##
+Query OK, 0 rows affected (0.42 sec)
+
+mysql> delimiter ;
+mysql> insert into trans values(1,'deposit',100000);
+Query OK, 1 row affected (0.36 sec)
+
+mysql> insert into trans values(2,'withdraw',10000);
+Query OK, 1 row affected (0.13 sec)
+
+mysql> insert into trans values(3,'withdraw',200);
+Query OK, 1 row affected (0.13 sec)
+
+mysql> select * from trans;
++--------+----------+--------+
+| acc_no | type     | amount |
++--------+----------+--------+
+|      1 | deposit  | 100000 |
+|      2 | withdraw |  10000 |
+|      3 | withdraw |    200 |
++--------+----------+--------+
+3 rows in set (0.00 sec)
+
+mysql> select * from account;
++--------+------+--------+
+| acc_no | name | bal    |
++--------+------+--------+
+|      1 | ram  |  99800 |
+|      2 | raj  | 109800 |
+|      3 | taj  | 110300 |
++--------+------+--------+
+3 rows in set (0.00 sec)

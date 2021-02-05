@@ -1,0 +1,264 @@
+mysql> CREATE DATABASE BANK;
+mysql> USE BANK;
+
+mysql> CREATE TABLE ACCOUNT(ACCN0 BIGINT,ACCNAME VARCHAR(20),ADDRESS VARCHAR(30),PAN_NO INT,ACCTYPE VARCHAR(20),BALANCE BIGINT,PHONE BIGINT);
+mysql> DESC ACCOUNT;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| ACCN0   | bigint(20)  | YES  |     | NULL    |       |
+| ACCNAME | varchar(20) | YES  |     | NULL    |       |
+| ADDRESS | varchar(30) | YES  |     | NULL    |       |
+| PAN_NO  | int(11)     | YES  |     | NULL    |       |
+| ACCTYPE | varchar(20) | YES  |     | NULL    |       |
+| BALANCE | bigint(20)  | YES  |     | NULL    |       |
+| PHONE   | bigint(20)  | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+
+mysql> CREATE TABLE TRANSACTIONS(TRANS_ID BIGINT,ACCNO BIGINT,TRANS_DATE DATE,AMOUNT BIGINT,TRANS_TYPE VARCHAR(20));
+
+mysql> DESC TRANSACTIONS;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| TRANS_ID   | bigint(20)  | YES  |     | NULL    |       |
+| ACCNO      | bigint(20)  | YES  |     | NULL    |       |
+| TRANS_DATE | date        | YES  |     | NULL    |       |
+| AMOUNT     | bigint(20)  | YES  |     | NULL    |       |
+| TRANS_TYPE | varchar(20) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+
+mysql> INSERT INTO ACCOUNT VALUES(100001,'AMAN','KOCHI',32134444,'SAVINGS',10575,987654321);
+mysql> INSERT INTO ACCOUNT VALUES(100002,'AMIT','KOCHI',75576424,'SAVINGS',150000,879654321);
+mysql> INSERT INTO ACCOUNT VALUES(100003,'MOHIT','KOCHI',87006424,'CURRENT',3500,789654321);
+mysql> INSERT INTO ACCOUNT VALUES(100004,'RAMAN','CALICUT',79576424,'CURRENT',250000,7689654321);
+mysql> INSERT INTO ACCOUNT VALUES(100005,'VISHAL','CHENNAI',45576424,'SAVINGS',300000,879654321);
+
+mysql> SELECT * FROM ACCOUNT;
++--------+---------+---------+----------+---------+---------+------------+
+| ACCN0  | ACCNAME | ADDRESS | PAN_NO   | ACCTYPE | BALANCE | PHONE      |
++--------+---------+---------+----------+---------+---------+------------+
+| 100001 | AMAN    | KOCHI   | 32134444 | SAVINGS |   10575 |  987654321 |
+| 100002 | AMIT    | KOCHI   | 75576424 | SAVINGS |  150000 |  879654321 |
+| 100003 | MOHIT   | KOCHI   | 87006424 | CURRENT |    3500 |  789654321 |
+| 100004 | RAMAN   | CALICUT | 79576424 | CURRENT |  250000 | 7689654321 |
+| 100005 | VISHAL  | CHENNAI | 45576424 | SAVINGS |  300000 |  879654321 |
++--------+---------+---------+----------+---------+---------+------------+
+
+mysql> ALTER TABLE ACCOUNT ADD CONSTRAINT MyPrimaryKey PRIMARY KEY(ACCN0);
+
+mysql> ALTER TABLE TRANSACTIONS ADD CONSTRAINT MyForeignKey FOREIGN KEY(ACCNO) REFERENCES ACCOUNT(ACCN0);
+
+mysql> INSERT INTO TRANSACTIONS VALUES(12345,100001,'2020-02-17',5000,'DEPOSIT');
+mysql> INSERT INTO TRANSACTIONS VALUES(12346,100002,'2020-01-19',40000,'DEPOSIT');
+mysql> INSERT INTO TRANSACTIONS VALUES(12347,100003,'2019-12-16',2000,'DEPOSIT');
+mysql> INSERT INTO TRANSACTIONS VALUES(12348,100004,'2020-01-06',30000,'WITHDRAWL');
+mysql> INSERT INTO TRANSACTIONS VALUES(12349,100005,'2020-01-16',25000,'WITHDRAWL');
+
+mysql> SELECT * FROM TRANSACTIONS;
++----------+--------+------------+--------+------------+
+| TRANS_ID | ACCNO  | TRANS_DATE | AMOUNT | TRANS_TYPE |
++----------+--------+------------+--------+------------+
+|    12345 | 100001 | 2020-02-17 |   5000 | DEPOSIT    |
+|    12346 | 100002 | 2020-01-19 |  40000 | DEPOSIT    |
+|    12347 | 100003 | 2019-12-16 |   2000 | DEPOSIT    |
+|    12348 | 100004 | 2020-01-06 |  30000 | WITHDRAWL  |
+|    12349 | 100005 | 2020-01-16 |  25000 | WITHDRAWL  |
++----------+--------+------------+--------+------------+
+
+(A)(1)
+
+mysql> CREATE VIEW VIEW_1 AS SELECT ACCN0,ACCNAME,PAN_NO FROM ACCOUNT WHERE ACCTYPE='CURRENT';
+
+(A)(2)
+
+mysql> CREATE VIEW VIEW2 AS SELECT ACCNAME,PHONE,BALANCE FROM ACCOUNT,TRANSACTIONS WHERE ACCOUNT.ACCN0=TRANSACTIONS.ACCNO AND MONTH(TRANS_DATE)!=MONTH(CURDATE()) AND ACCOUNT.BALANCE>200000;
+
+(B)
+
+mysql> SELECT * FROM VIEW_1;
++--------+---------+----------+
+| ACCN0  | ACCNAME | PAN_NO   |
++--------+---------+----------+
+| 100003 | MOHIT   | 87006424 |
+| 100004 | RAMAN   | 79576424 |
++--------+---------+----------+
+
+mysql> SELECT * FROM VIEW2;
++---------+------------+---------+
+| ACCNAME | PHONE      | BALANCE |
++---------+------------+---------+
+| RAMAN   | 7689654321 |  250000 |
+| VISHAL  |  879654321 |  300000 |
++---------+------------+---------+
+
+(C)
+mysql> UPDATE ACCOUNT SET ACCTYPE='SAVINGS' WHERE ACCTYPE='CURRENT' AND BALANCE<5000;
+mysql> SELECT * FROM ACCOUNT;
++--------+---------+---------+----------+---------+---------+------------+
+| ACCN0  | ACCNAME | ADDRESS | PAN_NO   | ACCTYPE | BALANCE | PHONE      |
++--------+---------+---------+----------+---------+---------+------------+
+| 100001 | AMAN    | KOCHI   | 32134444 | SAVINGS |   10575 |  987654321 |
+| 100002 | AMIT    | KOCHI   | 75576424 | SAVINGS |  150000 |  879654321 |
+| 100003 | MOHIT   | KOCHI   | 87006424 | SAVINGS |    3500 |  789654321 |
+| 100004 | RAMAN   | CALICUT | 79576424 | CURRENT |  250000 | 7689654321 |
+| 100005 | VISHAL  | CHENNAI | 45576424 | SAVINGS |  300000 |  879654321 |
++--------+---------+---------+----------+---------+---------+------------+
+
+(D)
+
+mysql> SELECT * FROM ACCOUNT,TRANSACTIONS WHERE ACCOUNT.ACCN0=TRANSACTIONS.ACCNO AND ACCOUNT.BALANCE>200000 AND MONTH(TRANS_DATE)!=MONTH(CURDATE());
++--------+---------+---------+----------+---------+---------+------------+----------+--------+------------+--------+------------+
+| ACCN0  | ACCNAME | ADDRESS | PAN_NO   | ACCTYPE | BALANCE | PHONE      | TRANS_ID | ACCNO  | TRANS_DATE | AMOUNT | TRANS_TYPE |
++--------+---------+---------+----------+---------+---------+------------+----------+--------+------------+--------+------------+
+| 100004 | RAMAN   | CALICUT | 79576424 | CURRENT |  250000 | 7689654321 |    12348 | 100004 | 2020-01-06 |  30000 | WITHDRAWL  |
+| 100005 | VISHAL  | CHENNAI | 45576424 | SAVINGS |  300000 |  879654321 |    12349 | 100005 | 2020-01-16 |  25000 | WITHDRAWL  |
++--------+---------+---------+----------+---------+---------+------------+----------+--------+------------+--------+------------+
+
+mysql> INSERT INTO TRANSACTIONS VALUES(12351,100004,'2020-02-09',5000,'DEPOSIT');
+mysql> INSERT INTO TRANSACTIONS VALUES(12352,100005,'2020-02-03',10000,'WITHDRAWL');
+mysql> SELECT * FROM TRANSACTIONS;
++----------+--------+------------+--------+------------+
+| TRANS_ID | ACCNO  | TRANS_DATE | AMOUNT | TRANS_TYPE |
++----------+--------+------------+--------+------------+
+|    12345 | 100001 | 2020-02-17 |   5000 | DEPOSIT    |
+|    12346 | 100002 | 2020-01-19 |  40000 | DEPOSIT    |
+|    12347 | 100003 | 2019-12-16 |   2000 | DEPOSIT    |
+|    12348 | 100004 | 2020-01-06 |  30000 | WITHDRAWL  |
+|    12349 | 100005 | 2020-01-16 |  25000 | WITHDRAWL  |
+|    12351 | 100004 | 2020-02-09 |   5000 | DEPOSIT    |
+|    12352 | 100005 | 2020-02-03 |  10000 | WITHDRAWL  |
++----------+--------+------------+--------+------------+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+mysql> desc account;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| acc_no   | int(11)     | NO   | PRI | NULL    |       |
+| acc_name | varchar(20) | YES  |     | NULL    |       |
+| address  | varchar(20) | YES  |     | NULL    |       |
+| pan_no   | int(11)     | YES  |     | NULL    |       |
+| acc_type | varchar(20) | YES  |     | NULL    |       |
+| balance  | int(11)     | YES  |     | NULL    |       |
+| phone    | varchar(10) | YES  |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+7 rows in set (0.01 sec)
+
+mysql> desc transaction;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| trans_id   | int(11)     | NO   | PRI | NULL    |       |
+| acc_no     | int(11)     | YES  | MUL | NULL    |       |
+| trans_date | date        | YES  |     | NULL    |       |
+| amount     | int(11)     | YES  |     | NULL    |       |
+| trans_type | varchar(20) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+5 rows in set (0.01 sec)
+
+mysql> select * from account;
++--------+----------+---------------+--------+----------+---------+-----------+
+| acc_no | acc_name | address       | pan_no | acc_type | balance | phone     |
++--------+----------+---------------+--------+----------+---------+-----------+
+|   1111 | berlin   | berlin villa  |   5111 | saving   |  250000 | 987654321 |
+|   2111 | tokyo    | tokyo villa   |   6111 | saving   |    4999 | 977654321 |
+|   3111 | nairobi  | nairobi villa |   7111 | current  |  300000 | 957654321 |
+|   4111 | helsinki | twin house    |   8111 | current  |  150000 | 957354321 |
+|   4150 | denver   | qwerty        |   9111 | saving   |  150500 | 957354621 |
++--------+----------+---------------+--------+----------+---------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> select * from transaction;
++----------+--------+------------+--------+------------+
+| trans_id | acc_no | trans_date | amount | trans_type |
++----------+--------+------------+--------+------------+
+|     1999 |   1111 | 2020-01-31 |  25000 | cheque     |
+|     2999 |   1111 | 2020-04-12 |    400 | gpay       |
+|     3999 |   2111 | 2020-03-15 |    450 | gpay       |
+|     4999 |   3111 | 2020-04-15 |   6000 | gpay       |
+|     5999 |   4111 | 2020-03-20 |   6500 | gpay       |
+|     6999 |   4150 | 2020-02-15 |    600 | gpay       |
++----------+--------+------------+--------+------------+
+6 rows in set (0.00 sec)
+
+a)
+
+	(i)	mysql> create view view_1 as select acc_name,acc_no,pan_no from account where acc_type='current';
+		Query OK, 0 rows affected (0.20 sec)
+
+	(ii)	mysql> create view view_2 as select acc_name,
+			phone,balance from account a,transaction t
+			where balance>100000 and month(trans_date)!= month		(curdate()) and a.acc_no=t.acc_no;
+			
+
+b)
+
+mysql> select * from view_1;
++----------+--------+--------+
+| acc_name | acc_no | pan_no |
++----------+--------+--------+
+| nairobi  |   3111 |   7111 |
+| helsinki |   4111 |   8111 |
++----------+--------+--------+
+2 rows in set (0.16 sec)
+
+mysql> select * from view_2;
++----------+-----------+---------+
+| acc_name | phone     | balance |
++----------+-----------+---------+
+| berlin   | 987654321 |  250000 |
+| helsinki | 957354321 |  150000 |
+| denver   | 957354621 |  150500 |
++----------+-----------+---------+
+3 rows in set (0.00 sec)
+
+c)
+
+mysql> update account
+    -> set acc_type='SB'
+    -> where balance<5000;
+
+
+mysql> select * from account;
++--------+----------+---------------+--------+----------+---------+-----------+
+| acc_no | acc_name | address       | pan_no | acc_type | balance | phone     |
++--------+----------+---------------+--------+----------+---------+-----------+
+|   1111 | berlin   | berlin villa  |   5111 | saving   |  250000 | 987654321 |
+|   2111 | tokyo    | tokyo villa   |   6111 | SB       |    4999 | 977654321 |
+|   3111 | nairobi  | nairobi villa |   7111 | current  |  300000 | 957654321 |
+|   4111 | helsinki | twin house    |   8111 | current  |  150000 | 957354321 |
+|   4150 | denver   | qwerty        |   9111 | saving   |  150500 | 957354621 |
++--------+----------+---------------+--------+----------+---------+-----------+
+5 rows in set (0.00 sec)
+
+d)	insert into transaction (acc_no, trans_date, amount,trans_type)
+	select acc_no, now(), 10000, "debit" from account
+	where balance>200000 and account.acc_no Not int 
+	(select acc_no from transaction where 
+	month(trans_date)=month(now()));
+		
+

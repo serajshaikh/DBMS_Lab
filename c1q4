@@ -1,0 +1,169 @@
+mysql> create table department(
+    -> deptno int primary key,
+    -> dname varchar(20)
+    -> );
+Query OK, 0 rows affected (0.16 sec)
+
+mysql> desc department;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| deptno | int(11)     | NO   | PRI | NULL    |       |
+| dname  | varchar(20) | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+2 rows in set (0.01 sec)
+
+mysql> create table employee(
+    -> id int primary key,
+    -> name varchar(20),
+    -> designation varchar(20),
+    -> deptno int,
+    -> foreign key(deptno) references department(deptno)
+    -> );
+Query OK, 0 rows affected (0.49 sec)
+
+mysql> desc employee;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| id          | int(11)     | NO   | PRI | NULL    |       |
+| name        | varchar(20) | YES  |     | NULL    |       |
+| designation | varchar(20) | YES  |     | NULL    |       |
+| deptno      | int(11)     | YES  | MUL | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+
+mysql> select * from department;
++--------+----------+
+| deptno | dname    |
++--------+----------+
+|      5 | sales    |
+|     10 | billing  |
+|     15 | security |
+|     20 | purchase |
++--------+----------+
+4 rows in set (0.00 sec)
+
+mysql> select * from employee;
++----+---------+-------------+--------+
+| id | name    | designation | deptno |
++----+---------+-------------+--------+
+| 50 | abhi    | salesman    |      5 |
+| 51 | abu     | salesman    |      5 |
+| 52 | babu    | HOD         |      5 |
+| 53 | cyril   | Accountant  |     10 |
+| 54 | caina   | Accountant  |     10 |
+| 55 | Dominic | HOD         |     10 |
+| 56 | Eravi   | Security    |     15 |
+| 57 | Fazil   | Security    |     15 |
+| 58 | Gautham | HOD         |     15 |
+| 59 | Iris    | clerk       |     20 |
+| 60 | jacob   | clerk       |     20 |
+| 61 | Komal   | HOD         |     20 |
++----+---------+-------------+--------+
+12 rows in set (0.00 sec)
+
+a)
+
+mysql> select name,designation,d.dname
+ from employee e,department d 
+ where e.deptno=d.deptno and designation="HOD";
++---------+-------------+----------+
+| name    | designation | dname    |
++---------+-------------+----------+
+| babu    | HOD         | sales    |
+| Dominic | HOD         | billing  |
+| Gautham | HOD         | security |
+| Komal   | HOD         | purchase |
++---------+-------------+----------+
+4 rows in set (0.00 sec)
+
+b)
+
+mysql> select * from employee
+    -> left join department
+    -> on employee.deptno=department.deptno;
++----+---------+-------------+--------+--------+----------+
+| id | name    | designation | deptno | deptno | dname    |
++----+---------+-------------+--------+--------+----------+
+| 50 | abhi    | salesman    |      5 |      5 | sales    |
+| 51 | abu     | salesman    |      5 |      5 | sales    |
+| 52 | babu    | HOD         |      5 |      5 | sales    |
+| 53 | cyril   | Accountant  |     10 |     10 | billing  |
+| 54 | caina   | Accountant  |     10 |     10 | billing  |
+| 55 | Dominic | HOD         |     10 |     10 | billing  |
+| 56 | Eravi   | Security    |     15 |     15 | security |
+| 57 | Fazil   | Security    |     15 |     15 | security |
+| 58 | Gautham | HOD         |     15 |     15 | security |
+| 59 | Iris    | clerk       |     20 |     20 | purchase |
+| 60 | jacob   | clerk       |     20 |     20 | purchase |
+| 61 | Komal   | HOD         |     20 |     20 | purchase |
++----+---------+-------------+--------+--------+----------+
+12 rows in set (0.00 sec)
+
+mysql> select * from department
+    -> left join employee
+    -> on employee.deptno=department.deptno;
++--------+------------+------+---------+-------------+--------+
+| deptno | dname      | id   | name    | designation | deptno |
++--------+------------+------+---------+-------------+--------+
+|      5 | sales      |   50 | abhi    | salesman    |      5 |
+|      5 | sales      |   51 | abu     | salesman    |      5 |
+|      5 | sales      |   52 | babu    | HOD         |      5 |
+|     10 | billing    |   53 | cyril   | Accountant  |     10 |
+|     10 | billing    |   54 | caina   | Accountant  |     10 |
+|     10 | billing    |   55 | Dominic | HOD         |     10 |
+|     15 | security   |   56 | Eravi   | Security    |     15 |
+|     15 | security   |   57 | Fazil   | Security    |     15 |
+|     15 | security   |   58 | Gautham | HOD         |     15 |
+|     20 | purchase   |   59 | Iris    | clerk       |     20 |
+|     20 | purchase   |   60 | jacob   | clerk       |     20 |
+|     20 | purchase   |   61 | Komal   | HOD         |     20 |
+|     25 | electrcity | NULL | NULL    | NULL        |   NULL |
++--------+------------+------+---------+-------------+--------+
+13 rows in set (0.00 sec)
+
+
+mysql> select * from employee
+    -> right join department
+    -> on employee.deptno=department.deptno;
++------+---------+-------------+--------+--------+------------+
+| id   | name    | designation | deptno | deptno | dname      |
++------+---------+-------------+--------+--------+------------+
+|   50 | abhi    | salesman    |      5 |      5 | sales      |
+|   51 | abu     | salesman    |      5 |      5 | sales      |
+|   52 | babu    | HOD         |      5 |      5 | sales      |
+|   53 | cyril   | Accountant  |     10 |     10 | billing    |
+|   54 | caina   | Accountant  |     10 |     10 | billing    |
+|   55 | Dominic | HOD         |     10 |     10 | billing    |
+|   56 | Eravi   | Security    |     15 |     15 | security   |
+|   57 | Fazil   | Security    |     15 |     15 | security   |
+|   58 | Gautham | HOD         |     15 |     15 | security   |
+|   59 | Iris    | clerk       |     20 |     20 | purchase   |
+|   60 | jacob   | clerk       |     20 |     20 | purchase   |
+|   61 | Komal   | HOD         |     20 |     20 | purchase   |
+| NULL | NULL    | NULL        |   NULL |     25 | electrcity |
++------+---------+-------------+--------+--------+------------+
+13 rows in set (0.00 sec)
+
+mysql> select * from department
+    -> right join employee
+    -> on employee.deptno=department.deptno;
++--------+----------+----+---------+-------------+--------+
+| deptno | dname    | id | name    | designation | deptno |
++--------+----------+----+---------+-------------+--------+
+|      5 | sales    | 50 | abhi    | salesman    |      5 |
+|      5 | sales    | 51 | abu     | salesman    |      5 |
+|      5 | sales    | 52 | babu    | HOD         |      5 |
+|     10 | billing  | 53 | cyril   | Accountant  |     10 |
+|     10 | billing  | 54 | caina   | Accountant  |     10 |
+|     10 | billing  | 55 | Dominic | HOD         |     10 |
+|     15 | security | 56 | Eravi   | Security    |     15 |
+|     15 | security | 57 | Fazil   | Security    |     15 |
+|     15 | security | 58 | Gautham | HOD         |     15 |
+|     20 | purchase | 59 | Iris    | clerk       |     20 |
+|     20 | purchase | 60 | jacob   | clerk       |     20 |
+|     20 | purchase | 61 | Komal   | HOD         |     20 |
++--------+----------+----+---------+-------------+--------+
+12 rows in set (0.00 sec)

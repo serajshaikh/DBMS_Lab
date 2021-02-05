@@ -1,0 +1,113 @@
+mysql> create database ebill;
+
+
+mysql> use ebill;
+Database changed
+mysql> create table consumer;
+
+mysql> desc consumer;
++--------------+-------------+------+-----+---------+-------+
+| Field        | Type        | Null | Key | Default | Extra |
++--------------+-------------+------+-----+---------+-------+
+| ID           | int(11)     | NO   | PRI | NULL    |       |
+| name         | varchar(20) | YES  |     | NULL    |       |
+| address      | varchar(20) | YES  |     | NULL    |       |
+| last_reading | int(11)     | YES  |     | NULL    |       |
+| cur_reading  | int(11)     | YES  |     | NULL    |       |
+| month        | int(11)     | YES  |     | NULL    |       |
+| year         | int(11)     | YES  |     | NULL    |       |
+| unit_charge  | int(11)     | YES  |     | 2       |       |
++--------------+-------------+------+-----+---------+-------+
+8 rows in set (0.11 sec)
+
+mysql> select * from consumer;
++----+---------+-----------+--------------+-------------+-------+------+-------------+
+| ID | name    | address   | last_reading | cur_reading | month | year | unit_charge |
++----+---------+-----------+--------------+-------------+-------+------+-------------+
+|  1 | bheem   | bhim      |         3000 |        NULL |     3 | 2020 |           2 |
+|  2 | raju    | raj villa |         3050 |        NULL |     3 | 2020 |           2 |
+|  3 | chutki  | myhouse   |         4050 |        NULL |     3 | 2020 |           2 |
+|  4 | jaggu   | tree      |         5050 |        NULL |     3 | 2020 |           2 |
+|  5 | khaliya | villa     |         6050 |        NULL |     3 | 2020 |           2 |
++----+---------+-----------+--------------+-------------+-------+------+-------------+
+5 rows in set (0.00 sec)
+
+ mysql> delimiter $$
+mysql> create procedure billcalc(id int,cur_read int)
+    -> begin
+    -> declare u_charge int;
+    -> declare last_read int;
+    -> declare charge int;
+    -> update consumer set consumer.cur_reading=cur_read where consumer.ID=id;
+    -> select consumer.last_reading,consumer.unit_charge into last_read,
+       u_charge from consumer where consumer.ID=id and
+       consumer.cur_reading=cur_read;
+    -> select (cur_read-last_read)*u_charge into charge from consumer 
+       where consumer.ID=id and cur_read>last_read;
+    -> select consumer.ID,consumer.name,
+       date_add(curdate(),interval 10 day) as 'last_date_of_payment',
+       cur_read-last_read as 'units_consumed',charge from consumer 
+       where consumer.ID=id;
+    -> end $$
+
+    mysql> delimiter ;
+mysql> call billcalc(1,4000);
++----+-------+----------------------+----------------+--------+
+| ID | name  | last_date_of_payment | units_consumed | charge |
++----+-------+----------------------+----------------+--------+
+|  1 | bheem | 2020-04-10           |           1000 |   2000 |
++----+-------+----------------------+----------------+--------+
+1 row in set (0.16 sec)
+
+Query OK, 0 rows affected (0.18 sec)
+
+mysql> call billcalc(2,3150);
++----+------+----------------------+----------------+--------+
+| ID | name | last_date_of_payment | units_consumed | charge |
++----+------+----------------------+----------------+--------+
+|  2 | raju | 2020-04-10           |            100 |    200 |
++----+------+----------------------+----------------+--------+
+1 row in set (0.12 sec)
+
+Query OK, 0 rows affected (0.12 sec)
+
+mysql> call billcalc(3,5250);
++----+--------+----------------------+----------------+--------+
+| ID | name   | last_date_of_payment | units_consumed | charge |
++----+--------+----------------------+----------------+--------+
+|  3 | chutki | 2020-04-10           |           1200 |   2400 |
++----+--------+----------------------+----------------+--------+
+1 row in set (0.12 sec)
+
+mysql> call billcalc(4,6500);
++----+-------+----------------------+----------------+--------+
+| ID | name  | last_date_of_payment | units_consumed | charge |
++----+-------+----------------------+----------------+--------+
+|  4 | jaggu | 2020-04-10           |           1450 |   2900 |
++----+-------+----------------------+----------------+--------+
+1 row in set (0.06 sec)
+
+Query OK, 0 rows affected (0.07 sec)
+
+mysql> call billcalc(5,10000);
++----+---------+----------------------+----------------+--------+
+| ID | name    | last_date_of_payment | units_consumed | charge |
++----+---------+----------------------+----------------+--------+
+|  5 | khaliya | 2020-04-10           |           3950 |   7900 |
++----+---------+----------------------+----------------+--------+
+1 row in set (0.04 sec)
+
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> select * from consumer;
++----+---------+-----------+--------------+-------------+-------+------+-------------+
+| ID | name    | address   | last_reading | cur_reading | month | year | unit_charge |
++----+---------+-----------+--------------+-------------+-------+------+-------------+
+|  1 | bheem   | bhim      |         3000 |        4000 |     3 | 2020 |           2 |
+|  2 | raju    | raj villa |         3050 |        3150 |     3 | 2020 |           2 |
+|  3 | chutki  | myhouse   |         4050 |        5250 |     3 | 2020 |           2 |
+|  4 | jaggu   | tree      |         5050 |        6500 |     3 | 2020 |           2 |
+|  5 | khaliya | villa     |         6050 |       10000 |     3 | 2020 |           2 |
++----+---------+-----------+--------------+-------------+-------+------+-------------+
+5 rows in set (0.00 sec)
+

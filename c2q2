@@ -1,0 +1,99 @@
+mysql> create database second;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> use second;
+
+mysql> desc account;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| acc_no   | int(11)     | NO   | PRI | NULL    |       |
+| acc_name | varchar(20) | YES  |     | NULL    |       |
+| balance  | int(11)     | YES  |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> desc transaction;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| tran_id    | int(11)     | NO   | PRI | NULL    |       |
+| acc_no     | int(11)     | YES  | MUL | NULL    |       |
+| tran_date  | date        | YES  |     | NULL    |       |
+| amount     | int(11)     | YES  |     | NULL    |       |
+| trans_type | varchar(20) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+5 rows in set (0.02 sec)
+
+mysql> select * from account;
++--------+----------+---------+
+| acc_no | acc_name | balance |
++--------+----------+---------+
+|   1000 | abhi     |    5000 |
+|   1001 | abu      |    2600 |
+|   1002 | babu     |    1000 |
+|   1003 | subu     |     200 |
+|   1004 | damu     |   20000 |
++--------+----------+---------+
+5 rows in set (0.00 sec)
+
+mysql> select * from transaction;
++---------+--------+------------+--------+------------+
+| tran_id | acc_no | tran_date  | amount | trans_type |
++---------+--------+------------+--------+------------+
+|    2000 |   1000 | 2020-01-31 |    100 | withdrawal |
+|    2001 |   1000 | 2020-02-01 |    100 | deposit    |
+|    2002 |   1001 | 2020-04-09 |    150 | deposit    |
+|    2003 |   1001 | 2020-04-10 |    300 | deposit    |
+|    2004 |   1004 | 2020-04-10 |   2501 | withdrawal |
+|    2005 |   1003 | 2019-04-10 |     10 | deposit    |
+|    2006 |   1002 | 2020-04-10 |    100 | deposit    |
++---------+--------+------------+--------+------------+
+7 rows in set (0.00 sec)
+
+a)
+
+mysql> select * from account
+ where balance=(select max(balance) from account);
++--------+----------+---------+
+| acc_no | acc_name | balance |
++--------+----------+---------+
+|   1004 | damu     |   20000 |
++--------+----------+---------+
+1 row in set (0.12 sec)
+
+b) select account.acc_name from acount where acount.acc_no in (select 
+transaction.acc_no from transaction Group by acc_no ,week(tran_date)
+ having count(week(tran_date))>2);
+
+
+
+c)
+
+mysql> select acc_name,balance from account,transaction
+ where amount>2500 and trans_type='withdrawal'
+ and year(tran_date)=year(curdate()) and month(tran_date)=month(curdate()) 
+ and account.acc_no=transaction.acc_no;
++----------+---------+
+| acc_name | balance |
++----------+---------+
+| damu     |   20000 |
++----------+---------+
+1 row in set (0.00 sec)
+
+
+d)
+
+mysql> select distinct acc_name from account,transaction
+ where month(curdate())!=month(tran_date) and account.acc_no=transaction.acc_no;
++----------+
+| acc_name |
++----------+
+| abhi     |
+| abu      |
+| babu     |
+| subu     |
+| damu     |
++----------+
+5 rows in set (0.00 sec)
+

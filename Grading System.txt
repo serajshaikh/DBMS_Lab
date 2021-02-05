@@ -1,0 +1,107 @@
+Name Seraj Ahamad
+Roll No 84
+Class CSE
+
+mysql> create database calculation;
+
+mysql> use calculation;
+
+mysql> create table test(RollNo int(10) primary key ,Name varchar(20),M1 float(5,2),M2 float(5,2),M3 float(5,2),M4 float(5,2),M5 float(5,2),M6 float(5,2),Total float(5,2),Grade char(2));
+
+mysql> desc Test;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| RollNo | int(10)     | NO   | PRI | NULL    |       |
+| Name   | varchar(20) | YES  |     | NULL    |       |
+| M1     | float(5,2)  | YES  |     | NULL    |       |
+| M2     | float(5,2)  | YES  |     | NULL    |       |
+| M3     | float(5,2)  | YES  |     | NULL    |       |
+| M4     | float(5,2)  | YES  |     | NULL    |       |
+| M5     | float(5,2)  | YES  |     | NULL    |       |
+| M6     | float(5,2)  | YES  |     | NULL    |       |
+| Total  | float(5,2)  | YES  |     | NULL    |       |
+| Grade  | char(2)     | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+
+mysql> insert into Test(RollNo,Name,M1,M2,M3,M4,M5,M6) values(1,"A",90,95,94,98,96,99),(2,"B",85,86,99,79,99,90),(3,"C",66,77,88,83,99,56),(4,"D",80,86,59,99,77,83);
+
+mysql> select * from Test;
++--------+------+-------+-------+-------+-------+-------+-------+-------+-------+
+| RollNo | Name | M1    | M2    | M3    | M4    | M5    | M6    | Total | Grade |
++--------+------+-------+-------+-------+-------+-------+-------+-------+-------+
+|      1 | A    | 90.00 | 95.00 | 94.00 | 98.00 | 96.00 | 99.00 |  NULL | NULL  |
+|      2 | B    | 85.00 | 86.00 | 99.00 | 79.00 | 99.00 | 90.00 |  NULL | NULL  |
+|      3 | C    | 66.00 | 77.00 | 88.00 | 83.00 | 99.00 | 56.00 |  NULL | NULL  |
+|      4 | D    | 80.00 | 86.00 | 59.00 | 99.00 | 77.00 | 83.00 |  NULL | NULL  |
++--------+------+-------+-------+-------+-------+-------+-------+-------+-------+
+
+mysql> delimiter #
+mysql>
+mysql> drop procedure if exists grade;
+    -> create procedure grade(r int)
+    -> begin
+    -> declare done int default 0;
+    -> declare nam varchar(20);
+    -> declare g varchar(2);
+    -> declare a,b,c,d,e,f,t float(5,2);
+    -> declare cur cursor for select RollNo,Name,M1,M2,M3,M4,M5,M6 from Test;
+    -> declare continue handler for not found set done= 1;
+    -> open cur;
+    -> readloop:loop
+    -> fetch cur into r,nam,a,b,c,d,e,f;
+    -> set t=a+b+c+d+e+f;
+    -> if t>480 then
+    -> set g = "A";
+    -> if t>400 then
+    -> set g='B+';
+    -> if t>360 then
+    -> set g ="B";
+    -> if t > 300 then
+    -> set g='C';
+    -> else
+    ->     set g='F';
+    -> end if;
+    -> end if;
+    -> end if;
+    -> end if;
+    -> if done=1 then
+    -> leave readloop;
+    -> end if;
+    -> update Test set Grade=g,Total=t where RollNo=r;
+    -> end loop;
+    -> close cur;
+    -> select RollNo,Total,Grade from test where RollNo =r;
+    -> end #
+
+
+mysql> call Grade(4)#
++--------+--------+-------+
+| RollNo | Total  | Grade |
++--------+--------+-------+
+|      4 | 484.00 | C     |
++--------+--------+-------+
+
+
+mysql> call Grade(3)#
++--------+--------+-------+
+| RollNo | Total  | Grade |
++--------+--------+-------+
+|      4 | 484.00 | C     |
++--------+--------+-------+
+
+
+mysql> call Grade(2)#
++--------+--------+-------+
+| RollNo | Total  | Grade |
++--------+--------+-------+
+|      4 | 484.00 | C     |
++--------+--------+-------+
+
+
+mysql> call Grade(1)#
++--------+--------+-------+
+| RollNo | Total  | Grade |
++--------+--------+-------+
+|      4 | 484.00 | C     |
++--------+--------+-------+

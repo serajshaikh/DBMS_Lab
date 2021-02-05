@@ -1,0 +1,154 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+mysql> desc kerala;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| name       | varchar(20) | NO   | PRI | NULL    |       |
+| literacy   | int(11)     | YES  |     | NULL    |       |
+| population | int(11)     | YES  |     | NULL    |       |
+| area       | varchar(20) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+4 rows in set (0.06 sec)
+
+mysql> desc tamilnadu;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| name       | varchar(20) | NO   | PRI | NULL    |       |
+| literacy   | int(11)     | YES  |     | NULL    |       |
+| population | int(11)     | YES  |     | NULL    |       |
+| area       | varchar(20) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+mysql> select * from kerala;
++------------+----------+------------+--------+
+| name       | literacy | population | area   |
++------------+----------+------------+--------+
+| calicut    |       96 |       6500 | 28000  |
+| kannur     |       98 |       6000 | 1800   |
+| kochi      |      100 |      10000 | 450000 |
+| malappuram |       92 |      13500 | 32000  |
+| trivandrum |       99 |       7000 | 28550  |
++------------+----------+------------+--------+
+5 rows in set (0.00 sec)
+
+mysql> select * from tamilnadu;
++-------------+----------+------------+-------+
+| name        | literacy | population | area  |
++-------------+----------+------------+-------+
+| coimbatore  |       98 |       6500 | 18000 |
+| erode       |       87 |       3500 | 16500 |
+| kanchipuram |       65 |       7500 | 20000 |
+| kanyakumari |       85 |       8500 | 20500 |
+| madhurai    |       85 |       8700 | 21500 |
++-------------+----------+------------+-------+
+5 rows in set (0.00 sec)
+
+a)
+
+mysql> select k.literacy as kerala_literacy,t.literacy as tamilnadu_literacy from kerala k,tamilnadu t where k.literacy=t.literacy;
++-----------------+--------------------+
+| kerala_literacy | tamilnadu_literacy |
++-----------------+--------------------+
+|              98 |                 98 |
++-----------------+--------------------+
+1 row in set (0.00 sec)
+
+b)
+
+mysql> select name from kerala union select name from tamilnadu;
++-------------+
+| name        |
++-------------+
+| calicut     |
+| kannur      |
+| kochi       |
+| malappuram  |
+| trivandrum  |
+| coimbatore  |
+| erode       |
+| kanchipuram |
+| kanyakumari |
+| madhurai    |
++-------------+
+10 rows in set (0.07 sec)
+
+c)
+
+mysql> select kerala.name,literacy from kerala 
+LEFT JOIN tamilnadu USING(literacy) 
+where tamilnadu.literacy IS NULL and tamilnadu.name IS NULL;
++------------+----------+
+| name       | literacy |
++------------+----------+
+| calicut    |       96 |
+| kochi      |      100 |
+| malappuram |       92 |
+| trivandrum |       99 |
++------------+----------+
+4 rows in set (0.00 sec)
+
+
+mysql> select tamilnadu.name,literacy from tamilnadu 
+LEFT JOIN kerala USING(literacy) 
+where kerala.literacy IS NULL and kerala.name IS NULL;
+
+select tamilnadu.name, literacy from tamilnadu 
+Left join kerala on (keral.litracy=tamilnadu.literacy) 
+where keral.literacy is null and keral.name is null;
++-------------+----------+
+| name        | literacy |
++-------------+----------+
+| erode       |       87 |
+| kanchipuram |       65 |
+| kanyakumari |       85 |
+| madhurai    |       85 |
++-------------+----------+
+4 rows in set (0.00 sec)
+

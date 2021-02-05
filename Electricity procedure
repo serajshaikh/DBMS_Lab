@@ -1,0 +1,94 @@
+mysql> CREATE DATABASE ELECTRICITY;
+
+mysql> USE ELECTRICITY;
+
+CREATE TABLE ELECTRICITY(ID INT,NAME VARCHAR(20),ADDRESS VARCHAR(20),LAST_READ INT,CUR_READ INT,MONTH INT,YEAR INT,UNIT_CHARGE INT DEFAULT 2,TOTAL_CHARGE INT);
+
+mysql> DESC ELECTRICITY;
++--------------+-------------+------+-----+---------+-------+
+| Field        | Type        | Null | Key | Default | Extra |
++--------------+-------------+------+-----+---------+-------+
+| ID           | int(11)     | YES  |     | NULL    |       |
+| NAME         | varchar(20) | YES  |     | NULL    |       |
+| ADDRESS      | varchar(20) | YES  |     | NULL    |       |
+| LAST_READ    | int(11)     | YES  |     | NULL    |       |
+| CUR_READ     | int(11)     | YES  |     | NULL    |       |
+| MONTH        | int(11)     | YES  |     | NULL    |       |
+| YEAR         | int(11)     | YES  |     | NULL    |       |
+| UNIT_CHARGE  | int(11)     | YES  |     | 2       |       |
+| TOTAL_CHARGE | int(11)     | YES  |     | NULL    |       |
++--------------+-------------+------+-----+---------+-------+
+
+INSERT INTO ELECTRICITY (ID,NAME,ADDRESS,LAST_READ)VALUES (202182,"Seraj Ahamad","Kota",1000),(202183,"Sagar krishna","Mumbai",100),(202184,"Ayaaz","Ahemdabad",1500),(202185,"Anjali","Kochi",2000);
+
+mysql> SELECT * FROM ELECTRICITY;
++-------+-------+---------+-----------+----------+-------+------+-------------+--------------+
+| ID    | NAME  | ADDRESS | LAST_READ | CUR_READ | MONTH | YEAR | UNIT_CHARGE | TOTAL_CHARGE |
++-------+-------+---------+-----------+----------+-------+------+-------------+--------------+
+| 202182 | Seraj Ahamad  | RANCHI  |      1100 |     NULL |  NULL | NULL |           2 |         NULL |
+| 202183 | Sagar krishna | PATNA   |      1270 |     NULL |  NULL | NULL |           2 |         NULL |
+| 202184 | Ayaaz | DELHI   |      1350 |     NULL |  NULL | NULL |           2 |         NULL |
+| 202185 | Anjali | KOCHI   |      1730 |     NULL |  NULL | NULL |           2 |         NULL |
++-------+-------+---------+-----------+----------+-------+------+-------------+--------------+
+
+mysql> DELIMITER @       
+mysql>     DROP PROCEDURE IF EXISTS ELECTRICITY;
+mysql>     CREATE PROCEDURE ELECTRICITY(CID INT,CURREAD INT)
+    ->     BEGIN
+    ->     DECLARE DONE INT DEFAULT 0;
+    ->     DECLARE CHARGE INT;
+    ->     DECLARE LASTDATE DATE;
+    ->     DECLARE CUNIT INT;
+    ->     DECLARE CNAME VARCHAR(20);
+    ->     DECLARE LASTREAD INT;
+    ->     DECLARE CUR CURSOR FOR SELECT ID,NAME,LAST_READ FROM ELECTRICITY WHERE ID=CID;
+    ->     DECLARE CONTINUE HANDLER FOR NOT FOUND SET DONE=1;
+    ->     OPEN CUR;
+    ->     READLOOP:LOOP
+    ->     FETCH CUR INTO CID,CNAME,LASTREAD;
+    ->     IF DONE=1 THEN
+    ->     LEAVE READLOOP;
+    ->     END IF;
+    ->     SET CUNIT=CURREAD-LASTREAD;
+    ->     SET CHARGE=CUNIT*2;
+    ->     SET LASTDATE=DATE_ADD(CURDATE(),INTERVAL 10 DAY);
+    ->     SELECT CID,CNAME,LASTDATE,CUNIT,CHARGE;
+    ->     UPDATE ELECTRICITY SET CUR_READ=CURREAD WHERE ID=CID;
+    ->     UPDATE ELECTRICITY SET MONTH=MONTH(LASTDATE) WHERE ID=CID;
+    ->     UPDATE ELECTRICITY SET YEAR=YEAR(LASTDATE) WHERE ID=CID;
+    ->     END LOOP;
+    ->     CLOSE CUR;
+    ->     END #
+
+mysql> DELIMITER ;
+mysql> CALL ELECTRICITY(202182,1400);
++-------+-------+------------+-------+--------+
+| CID   | CNAME | LASTDATE   | CUNIT | CHARGE |
++-------+-------+------------+-------+--------+
+| 202182 | Seraj Ahamad  | 2020-03-19 |   300 |    600 |
++-------+-------+------------+-------+--------+
+
+mysql> CALL ELECTRICITY(202183,1830);
++-------+-------+------------+-------+--------+
+| CID   | CNAME | LASTDATE   | CUNIT | CHARGE |
++-------+-------+------------+-------+--------+
+| 202183 | Sagar krishna | 2020-03-19 |   560 |   1120 |
++-------+-------+------------+-------+--------+
+
+mysql> CALL ELECTRICITY(202184,2180);
++-------+-------+------------+-------+--------+
+| CID   | CNAME | LASTDATE   | CUNIT | CHARGE |
++-------+-------+------------+-------+--------+
+| 202184 | Ayaaz | 2020-03-19 |   830 |   1660 |
++-------+-------+------------+-------+--------+
+
+mysql> CALL ELECTRICITY(202185,2020);
++-------+-------+------------+-------+--------+
+| CID   | CNAME | LASTDATE   | CUNIT | CHARGE |
++-------+-------+------------+-------+--------+
+| 202185 | Anjali | 2020-03-19 |   290 |    580 |
++-------+-------+------------+-------+--------+
+
+
+
+
